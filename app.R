@@ -76,21 +76,38 @@ server <- function(input, output) {
         if(outState() == 1) {
           feature_vector <- append(feature_vector, "TUITIONFEE_OUT")
         }
+        if(percWomen() == 1) {
+            feature_vector <- append(feature_vector, "UGDS_WOMEN")
+        }
+        if(gradRate() == 1) {
+            feature_vector <- append(feature_vector, "C150_4")
+        }
+        if(partTime() == 1) {
+            feature_vector <- append(feature_vector, "PPTUG_EF")
+        }
+        if(whiteStudent() == 1) {
+            feature_vector <- append(feature_vector, "UGDS_WHITE")
+        }
+        if(multiStudent() == 1) {
+            feature_vector <- append(feature_vector, "UGDS_2MOR")
+        }
+        if(federal() == 1) {
+            feature_vector <- append(feature_vector, "PCTFLOAN")
+        }
         if (length(feature_vector) == 1) {
             paste("Change at least one variable to yes")
         }
         else{
-        
+            #gets the correct columns from the dataset
             necessary_features <- filedata[, feature_vector]
-            
+            #converts the dataset to numbers
             necessary_features <- data.frame(lapply(necessary_features, as.numeric))
-            
+            #removes the null values
             necessary_features <- na.omit(necessary_features)
-            
+            #applies linear regression to the dataset
             linear_regression_model = lm(PCIP27~.-PCIP27, data=necessary_features)
-            
+            #prints a summary of the data
             summary(linear_regression_model)
-        
         }
     })
 
