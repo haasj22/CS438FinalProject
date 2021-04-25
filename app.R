@@ -44,7 +44,7 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
            verticalLayout(
-               textOutput("linear_regression"),
+               verbatimTextOutput("linear_regression"),
                plotOutput("tree")
            )
         )
@@ -65,7 +65,7 @@ server <- function(input, output) {
     multiStudent <- reactive({input$multirace_choice})
     federal <- reactive({input$federal_loan_choice})
     
-    output$linear_regression <- renderText({
+    output$linear_regression <- renderPrint({
         good <- 1
         bad <- 0
         
@@ -77,29 +77,19 @@ server <- function(input, output) {
           feature_vector <- append(feature_vector, "TUITIONFEE_OUT")
         }
         if (length(feature_vector) == 1) {
-            print("Turn on variable to yes")
-            paste("OUTPUT", bad)
+            paste("Change at least one variable to yes")
         }
         else{
-            print(feature_vector)
-        
-            #add the rest later
         
             necessary_features <- filedata[, feature_vector]
-            print(head(necessary_features))
             
             necessary_features <- data.frame(lapply(necessary_features, as.numeric))
             
-            print("here")
             necessary_features <- na.omit(necessary_features)
-            print("still here")
-            print(head(necessary_features))
             
-            print("almost done")
             linear_regression_model = lm(PCIP27~.-PCIP27, data=necessary_features)
             
-            print("done")
-            paste("Your linear model", summary(linear_regression_model))
+            summary(linear_regression_model)
         
         }
     })
