@@ -19,24 +19,24 @@ ui <- fluidPage(
     # Application title
     titlePanel("Math Team Final Dashboard"),
     h2("Choose variables to predict the amount of math majors at a college"),
-    # Sidebar with a slider input for number of bins 
+
     sidebarLayout(
         sidebarPanel(
-            radioGroupButtons("in_state_tuition_choice", label = h6("In State Tuition:"), 
+            radioGroupButtons("in_state_tuition_choice", label = h6("Students paying in-state Tuition:"), 
                          choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("out_of_state_tuition_choice", label = h6("Out of State Tuition:"), 
+            radioGroupButtons("out_of_state_tuition_choice", label = h6("Students paying out-of-State Tuition:"), 
                               choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("percentage_of_women_choice", label = h6("Percentage of women:"), 
+            radioGroupButtons("percentage_of_women_choice", label = h6("Students that are women:"), 
                               choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("graduation_rate_choice", label = h6("Graduation rate at 4 year insitutions:"), 
+            radioGroupButtons("graduation_rate_choice", label = h6("Students that graduate in 4 year institutions:"), 
                               choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("part_time_choice", label = h6("Percentage of students who are part time workers:"), 
+            radioGroupButtons("part_time_choice", label = h6("Part time student workers:"), 
                               choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("white_student_choice", label = h6("Percentage of students who are white:"), 
+            radioGroupButtons("white_student_choice", label = h6("Students who are white:"), 
                               choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("multirace_choice", label = h6("Percentage of students who are two or more races:"), 
+            radioGroupButtons("multirace_choice", label = h6("Students who are two or more races:"), 
                               choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("federal_loan_choice", label = h6("Percentage of students who are receiving federal loans:"), 
+            radioGroupButtons("federal_loan_choice", label = h6("Students who are receiving federal loans:"), 
                               choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE)
             
         ),
