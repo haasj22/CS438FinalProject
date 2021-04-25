@@ -82,20 +82,26 @@ server <- function(input, output) {
         }
         else{
             print(feature_vector)
-            paste("OUTPUT", good)
+        
+            #add the rest later
+        
+            necessary_features <- filedata[, feature_vector]
+            print(head(necessary_features))
+            
+            necessary_features <- data.frame(lapply(necessary_features, as.numeric))
+            
+            print("here")
+            necessary_features <- na.omit(necessary_features)
+            print("still here")
+            print(head(necessary_features))
+            
+            print("almost done")
+            linear_regression_model = lm(PCIP27~.-PCIP27, data=necessary_features)
+            
+            print("done")
+            paste("Your linear model", summary(linear_regression_model))
+        
         }
-        #add the rest later
-        
-        #necessary_features <- filedata[, feature_vector]
-        #for (value in feature_vector) {
-        #   necessary_features$value <- as.numeric(necessary_features$value)
-        #}
-        
-        #necessary_features <- na.omit(necessary_features)
-        
-        #linear_regression_model = lm.fit(PCIP27~.-PCIP27, data=necessary_features)
-        
-        #paste(summary(linear_regression_model))
     })
 
     #output$distPlot <- renderPlot({
