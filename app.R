@@ -43,17 +43,64 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-           #plotOutput("distPlot")
+           verticalLayout(
+               textOutput("linear_regression"),
+               plotOutput("tree")
+           )
         )
     )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+    
+    filedata <- read.csv("MERGED2018_19_PP.csv", header=TRUE)
+    
+    inState <- reactive({input$in_state_tuition_choice})
+    outState <- reactive({input$out_of_state_tuition_choice})
+    percWomen <- reactive({input$percentage_of_women_choice})
+    gradRate <- reactive({input$graduation_rate_choice})
+    partTime <- reactive({input$part_time_choice})
+    whiteStudent <- reactive({input$white_student_choice})
+    multiStudent <- reactive({input$multirace_choice})
+    federal <- reactive({input$federal_loan_choice})
+    
+    output$linear_regression <- renderText({
+        good <- 1
+        bad <- 0
+        
+        feature_vector <- c("PCIP27")
+        if(inState() == 1) {
+            feature_vector <- append(feature_vector, "TUITIONFEE_IN")
+        }
+        if(outState() == 1) {
+          feature_vector <- append(feature_vector, "TUITIONFEE_OUT")
+        }
+        if (length(feature_vector) == 1) {
+            print("Turn on variable to yes")
+            paste("OUTPUT", bad)
+        }
+        else{
+            print(feature_vector)
+            paste("OUTPUT", good)
+        }
+        #add the rest later
+        
+        #necessary_features <- filedata[, feature_vector]
+        #for (value in feature_vector) {
+        #   necessary_features$value <- as.numeric(necessary_features$value)
+        #}
+        
+        #necessary_features <- na.omit(necessary_features)
+        
+        #linear_regression_model = lm.fit(PCIP27~.-PCIP27, data=necessary_features)
+        
+        #paste(summary(linear_regression_model))
+    })
 
     #output$distPlot <- renderPlot({
         # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
+        #x    <- faithful[, 2]
     #    bins <- seq(min(x), max(x), length.out = input$bins + 1)
 
         # draw the histogram with the specified number of bins
