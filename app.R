@@ -82,7 +82,7 @@ ui <- fluidPage(
                             max=1.0, 
                             step=0.01, 
                             value=0.5),
-                    sliderInput("percentage_of_students_who_are_white",
+                    sliderInput("white_student_percentage_to_predict",
                             "Perentage of students who are white",
                             min=0.0, 
                             max=1.0, 
@@ -104,6 +104,7 @@ server <- function(input, output) {
     
     filedata <- read.csv("MERGED2018_19_PP.csv", header=TRUE)
     
+    #variables used to create models
     inState <- reactive({input$in_state_tuition_choice})
     outState <- reactive({input$out_of_state_tuition_choice})
     percWomen <- reactive({input$percentage_of_women_choice})
@@ -112,6 +113,13 @@ server <- function(input, output) {
     whiteStudent <- reactive({input$white_student_choice})
     multiStudent <- reactive({input$multirace_choice})
     federal <- reactive({input$federal_loan_choice})
+    
+    #variables used to predict off our best model
+    gradRateToPredict <- reactive({input$graduation_rate_to_predict})
+    inStateToPredict <- reactive({input$in_state_tuition_to_predict})
+    outStateToPredict <- reactive({input$out_state_tuition_to_predict})
+    partTimeToPredict <- reactive({input$part_time_job_percent_to_predict})
+    whiteStudentToPredict <- reactive({input$white_student_percentage_to_predict})
     
     output$linear_regression <- renderPrint({
         good <- 1
