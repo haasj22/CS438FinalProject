@@ -12,41 +12,90 @@
 
 library(shiny)
 library(shinyWidgets)
+library(shiny.router)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Math Team Final Dashboard"),
-    h2("Choose variables to predict the amount of math majors at a college"),
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            radioGroupButtons("in_state_tuition_choice", label = h6("In State Tuition:"), 
-                         choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("out_of_state_tuition_choice", label = h6("Out of State Tuition:"), 
-                              choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("percentage_of_women_choice", label = h6("Percentage of women:"), 
-                              choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("graduation_rate_choice", label = h6("Graduation rate at 4 year insitutions:"), 
-                              choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("part_time_choice", label = h6("Percentage of students who are part time workers:"), 
-                              choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("white_student_choice", label = h6("Percentage of students who are white:"), 
-                              choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("multirace_choice", label = h6("Percentage of students who are two or more races:"), 
-                              choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
-            radioGroupButtons("federal_loan_choice", label = h6("Percentage of students who are receiving federal loans:"), 
-                              choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE)
+    
+    navbarPage("MATH Team Project",
+        tabPanel(
+            "Model Creation Page",
+            # Application title
+            titlePanel("Create your own models using our cleaned dataset"),
+            h2("Choose variables to predict the amount of math majors at a college"),
+            # Sidebar with a slider input for number of bins 
+            sidebarLayout(
+                sidebarPanel(
+                    radioGroupButtons("in_state_tuition_choice", label = h6("In State Tuition:"), 
+                            choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
+                    radioGroupButtons("out_of_state_tuition_choice", label = h6("Out of State Tuition:"), 
+                            choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
+                    radioGroupButtons("percentage_of_women_choice", label = h6("Percentage of women:"), 
+                            choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
+                    radioGroupButtons("graduation_rate_choice", label = h6("Graduation rate at 4 year insitutions:"), 
+                            choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
+                    radioGroupButtons("part_time_choice", label = h6("Percentage of students who are part time workers:"), 
+                            choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
+                    radioGroupButtons("white_student_choice", label = h6("Percentage of students who are white:"), 
+                            choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
+                    radioGroupButtons("multirace_choice", label = h6("Percentage of students who are two or more races:"), 
+                            choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
+                    radioGroupButtons("federal_loan_choice", label = h6("Percentage of students who are receiving federal loans:"), 
+                            choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE)
             
-        ),
+                ),
 
-        # Show a plot of the generated distribution
-        mainPanel(
-           verticalLayout(
-               verbatimTextOutput("linear_regression"),
-               plotOutput("tree")
-           )
+                # Show a plot of the generated distribution
+                mainPanel(
+                    verticalLayout(
+                    verbatimTextOutput("linear_regression"),
+                    plotOutput("tree")
+                    )
+                )
+            ),
+        ),
+        tabPanel(
+            "Model Display Page",
+            titlePanel("Test some values on our best model"),
+            sidebarLayout(
+                sidebarPanel(
+                    sliderInput("graduation_rate_to_predict", 
+                            "School's gratuation rate",
+                            min=0.0, 
+                            max=1.0, 
+                            step=0.01, 
+                            value=0.5),
+                    sliderInput("in_state_tuition_to_predict", 
+                            "School's cost for in state tution",
+                            min=0, 
+                            max=60000, 
+                            step=100, 
+                            value=20000),
+                    sliderInput("out_state_tuition_to_predict", 
+                            "School's cost for out of state tution",
+                            min=0, 
+                            max=60000, 
+                            step=100, 
+                            value=20000),
+                    sliderInput("part_time_job_percent_to_predict",
+                            "Percentage of school's students that work part time jobs",
+                            min=0.0, 
+                            max=1.0, 
+                            step=0.01, 
+                            value=0.5),
+                    sliderInput("percentage_of_students_who_are_white",
+                            "Perentage of students who are white",
+                            min=0.0, 
+                            max=1.0, 
+                            step=0.01, 
+                            value=0.5)
+                ),
+                
+                mainPanel(
+                    verbatimTextOutput("best_tree"),
+                    verbatimTextOutput("prediction")
+                )
+            )
         )
     )
 )
