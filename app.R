@@ -42,7 +42,6 @@ ui <- fluidPage(
                             choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
                     radioGroupButtons("federal_loan_choice", label = h6("Percentage of students who are receiving federal loans:"), 
                             choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE)
-            
                 ),
 
                 # Show a plot of the generated distribution
