@@ -160,7 +160,7 @@ server <- function(input, output) {
             
             summary(tree.school)
             
-        }
+        } #testtest
     })
     
 }
