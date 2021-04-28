@@ -6,27 +6,36 @@
 #
 #    http://shiny.rstudio.com/
 #
+# Project Code created by John Haas, Ashley Kim, Nick Ohara
+# Data Completed on April 28, 2021
+#
+# Analysis data on 2018-2019 college data from the US. Board of Education
 
-#install if not installed already
-#install.packages("shinyWidgets")
-
+#uses libaries
 library(shiny)
 library(shinyWidgets)
 library(ggplot2)
 library(tree)
 
-# Define UI for application that draws a histogram
+# Define UI for application
 ui <- fluidPage(
     
+    #creates a navbar
     navbarPage("MATH Team Project",
+        
+        #tab for model creation panel
         tabPanel(
             "Model Creation Page",
             # Application title
             titlePanel("Create your own models using our cleaned dataset"),
-            h2("Choose variables to predict the amount of math majors at a college"),
+            
             # Sidebar with a slider input for number of bins 
+            h2("Choose variables to predict the amount of math majors at a college"),
             sidebarLayout(
                 sidebarPanel(
+                    #creates buttons that provide Yes or No choices 
+                    #as to whether each feature should be included
+                    
                     radioGroupButtons("in_state_tuition_choice", label = h6("In State Tuition:"), 
                         choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE),
                     radioGroupButtons("out_of_state_tuition_choice", label = h6("Out of State Tuition:"), 
@@ -45,21 +54,30 @@ ui <- fluidPage(
                         choices = list("Yes" = 1, "No" = 2), selected = 2, direction="horizontal", individual=FALSE)
                 ),
                            
-                # Show a plot of the generated distribution
+                # Shows plots of the generated distribution
                 mainPanel(
                     verticalLayout(
+                        #tells the program to plot the linear regression model
                         h4("Your Generated Linear Regression Model"),
                         verbatimTextOutput("linear_regression"),
+                        
+                        #tells the program to plot the binary tree
                         h4("Your Generated Binary Tree Model"),
                         plotOutput("tree")
                     )
                 )
             )
         ),
+        
+        #tab for displaying predictions for the models
         tabPanel(
             "Model Display Page",
+            
+            #gets user input for prediction
             titlePanel("Test some values on our best model"),
             sidebarLayout(
+                
+                #creates slidebars that get appropriate input ranges for each feature
                 sidebarPanel(
                     sliderInput("graduation_rate_to_predict", 
                         "School's graduation rate",
@@ -94,7 +112,10 @@ ui <- fluidPage(
                     ),
                                
                     mainPanel(
+                        #gets the summary of the linear regression tree
                         verbatimTextOutput("best_tree"),
+                        
+                        #explains the model
                         h4("Model Analysis"),
                         p("As shown in this model, we our best model explains 33% percent of the variance.
                       While this is not an amazing result the model does shed light on a couple interesting correlations.
@@ -112,6 +133,8 @@ ui <- fluidPage(
                       the proportion of multirace students, and the ability of students to get loans showed
                       no significance when trying to predict the number of math majors."),
                         h4("Your predicted college's percentage of math majors according to our model."),
+                        
+                        #prints the output of the prediction
                         verbatimTextOutput("prediction")
                     )
                 )
@@ -122,6 +145,7 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
     
+    #reads the csv
     filedata <- read.csv("MERGED2018_19_PP.csv", header=TRUE)
     
     #variables used to create models
@@ -141,19 +165,22 @@ server <- function(input, output) {
     partTimeToPredict <- reactive({input$part_time_job_percent_to_predict})
     whiteStudentToPredict <- reactive({input$white_student_percentage_to_predict})
     
+    #grabs the appropriate columns to create the best model
     data_for_best_model <- filedata[, c("C150_4", "TUITIONFEE_IN", 
                                         "TUITIONFEE_OUT", "PPTUG_EF", 
                                         "UGDS_WHITE", "PCIP27")]
+    
+    #makes the best model with the features we have
     data_for_best_model <-data.frame(lapply(data_for_best_model, as.numeric))
     data_for_best_model <- na.omit(data_for_best_model)
     best_model <- lm(PCIP27~poly(C150_4, 2) + poly(TUITIONFEE_IN, 1) 
                      + poly(TUITIONFEE_OUT, 4) + poly(PPTUG_EF, 2) 
                      + poly(UGDS_WHITE, 3), data=data_for_best_model)
     
+    #function for printing the model
     output$linear_regression <- renderPrint({
-        good <- 1
-        bad <- 0
         
+        #makes a feature vector containing all wanted features
         feature_vector <- c("PCIP27")
         if(inState() == 1) {
             feature_vector <- append(feature_vector, "TUITIONFEE_IN")
@@ -179,6 +206,7 @@ server <- function(input, output) {
         if(federal() == 1) {
             feature_vector <- append(feature_vector, "PCTFLOAN")
         }
+        #exits function if no variables are chosen
         if (length(feature_vector) == 1) {
             paste("Change at least one variable to yes")
         }
@@ -196,9 +224,12 @@ server <- function(input, output) {
         }
     })
     
+    #function that prints the information on the best model
     output$best_tree <- renderPrint({
         summary(best_model)
     })
+    
+    #function that prints the predicted value on our best model
     output$prediction <- renderPrint({
         predict(best_model, data.frame(C150_4 = c(gradRateToPredict()), 
                                        TUITIONFEE_IN = c(inStateToPredict()),
@@ -207,11 +238,14 @@ server <- function(input, output) {
                                        UGDS_WHITE = c(whiteStudentToPredict())))
     })
     
+    #function that plots a tree with the desired features
     output$tree <- renderPlot({
         
-        good <- 1
-        bad <- 0
-        
+        #makes a feature vector containing all wanted features
+        #NOTE code is repeaded from previous function
+        #This is bad coding standard but we could not figure out a way
+        #to work with reactive variables otherwise
+        #If we had more time I think we'd be able to fix this.
         feature_vector <- c("PCIP27")
         if(inState() == 1) {
             feature_vector <- append(feature_vector, "TUITIONFEE_IN")
@@ -247,10 +281,12 @@ server <- function(input, output) {
             #removes the null values
             necessary_features <- na.omit(necessary_features)
             
+            #creates a tree from the desired data
             set.seed(10)
             train = sample(1:nrow(necessary_features), nrow(necessary_features)/2)
             tree.school = tree(PCIP27~.-PCIP27,necessary_features, subset=train)
             
+            #plots the tree
             plot(tree.school)
             text(tree.school,pretty=0)
         }
