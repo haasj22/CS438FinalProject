@@ -58,7 +58,7 @@ ui <- fluidPage(
             sidebarLayout(
                 sidebarPanel(
                     sliderInput("graduation_rate_to_predict", 
-                            "School's gratuation rate",
+                            "School's graduation rate",
                             min=0.0, 
                             max=1.0, 
                             step=0.01, 
@@ -82,7 +82,7 @@ ui <- fluidPage(
                             step=0.01, 
                             value=0.5),
                     sliderInput("white_student_percentage_to_predict",
-                            "Perentage of students who are white",
+                            "Percentage of students who are white",
                             min=0.0, 
                             max=1.0, 
                             step=0.01, 
