@@ -12,7 +12,6 @@
 
 library(shiny)
 library(shinyWidgets)
-library(shiny.router)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -92,6 +91,7 @@ ui <- fluidPage(
                 
                 mainPanel(
                     verbatimTextOutput("best_tree"),
+                    h4("Your predicted college's percentage of math majors according to our model"),
                     verbatimTextOutput("prediction")
                 )
             )
@@ -120,6 +120,15 @@ server <- function(input, output) {
     outStateToPredict <- reactive({input$out_state_tuition_to_predict})
     partTimeToPredict <- reactive({input$part_time_job_percent_to_predict})
     whiteStudentToPredict <- reactive({input$white_student_percentage_to_predict})
+    
+    data_for_best_model <- filedata[, c("C150_4", "TUITIONFEE_IN", 
+                                        "TUITIONFEE_OUT", "PPTUG_EF", 
+                                        "UGDS_WHITE", "PCIP27")]
+    data_for_best_model <-data.frame(lapply(data_for_best_model, as.numeric))
+    data_for_best_model <- na.omit(data_for_best_model)
+    best_model <- lm(PCIP27~poly(C150_4, 2) + poly(TUITIONFEE_IN, 1) 
+                     + poly(TUITIONFEE_OUT, 4) + poly(PPTUG_EF, 2) 
+                     + poly(UGDS_WHITE, 3), data=data_for_best_model)
     
     output$linear_regression <- renderPrint({
         good <- 1
@@ -167,14 +176,16 @@ server <- function(input, output) {
         }
     })
 
-    #output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        #x    <- faithful[, 2]
-    #    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-    #    hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    #})
+    output$best_tree <- renderPrint({
+        summary(best_model)
+    })
+    output$prediction <- renderPrint({
+        predict(best_model, data.frame(C150_4 = c(gradRateToPredict()), 
+                                       TUITIONFEE_IN = c(inStateToPredict()),
+                                       TUITIONFEE_OUT = c(outStateToPredict()),
+                                       PPTUG_EF = c(partTimeToPredict()),
+                                       UGDS_WHITE = c(whiteStudentToPredict())))
+    })
 }
 
 # Run the application 
