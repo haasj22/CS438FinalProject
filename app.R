@@ -48,11 +48,13 @@ ui <- fluidPage(
                 # Show a plot of the generated distribution
                 mainPanel(
                     verticalLayout(
-                    verbatimTextOutput("linear_regression"),
-                    plotOutput("tree")
+                        h4("Your Generated Linear Regression Model"),
+                        verbatimTextOutput("linear_regression"),
+                        h4("Your Generated Binary Tree Model"),
+                        plotOutput("tree")
                     )
                 )
-            ),
+            )
         ),
         tabPanel(
             "Model Display Page",
@@ -236,7 +238,6 @@ server <- function(input, output) {
             feature_vector <- append(feature_vector, "PCTFLOAN")
         }
         if (length(feature_vector) == 1) {
-            paste("Change at least one variable to yes")
         }
         else{
             #gets the correct columns from the dataset
@@ -248,11 +249,11 @@ server <- function(input, output) {
             
             set.seed(10)
             train = sample(1:nrow(necessary_features), nrow(necessary_features)/2)
-            tree.school = tree(PCIP27~C150_4+UGDS_WOMEN+TUITIONFEE_IN+TUITIONFEE_OUT,necessary_features, subset=train)
+            tree.school = tree(PCIP27~.-PCIP27,necessary_features, subset=train)
             
-            summary(tree.school)
-            
-        } #testtest
+            plot(tree.school)
+            text(tree.school,pretty=0)
+        }
     })
     
 }
