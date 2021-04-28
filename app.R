@@ -111,31 +111,31 @@ ui <- fluidPage(
                         value=0.5)
                     ),
                                
-                    mainPanel(
-                        #gets the summary of the linear regression tree
-                        verbatimTextOutput("best_tree"),
+                mainPanel(
+                    #gets the summary of the linear regression tree
+                    verbatimTextOutput("best_tree"),
                         
-                        #explains the model
-                        h4("Model Analysis"),
-                        p("As shown in this model, we our best model explains 33% percent of the variance.
-                      While this is not an amazing result the model does shed light on a couple interesting correlations.
-                      First the positive coefficients for the out of state tuition fee means that the variable 
-                      has a positive correlation with the percentage of math majors.
-                      Perhaps this is because schools that cost more have higher funding for their programming or 
-                      it could mean that these colleges just spend more money on advertizing."),
-                        p("In contrast, colleges with a higher percentage of white students have a lower percentage of math majors.
-                      We do not know how to explain this trend, but maybe white students are more likely to choose other majors."),
-                        p("Next, it's relieving for students that like math to know that colleges with higher graduation rates
-                      tend to have more math majors."),
-                        p("Finally there is fluctuation for what an increase in part time workers does to the amount of math majors.
-                      Initial increases in part time labor show a decrease in math majors, but continued increase shows a rebound in math major percentages."),
-                        p("The last thing of note is that the attributes of the female percentage of students, 
-                      the proportion of multirace students, and the ability of students to get loans showed
-                      no significance when trying to predict the number of math majors."),
-                        h4("Your predicted college's percentage of math majors according to our model."),
+                    #explains the model
+                    h4("Model Analysis"),
+                    p("As shown in this model, we our best model explains 33% percent of the variance.
+                    While this is not an amazing result the model does shed light on a couple interesting correlations.
+                    First the positive coefficients for the out of state tuition fee means that the variable 
+                    has a positive correlation with the percentage of math majors.
+                    Perhaps this is because schools that cost more have higher funding for their programming or 
+                    it could mean that these colleges just spend more money on advertizing."),
+                    p("In contrast, colleges with a higher percentage of white students have a lower percentage of math majors.
+                    We do not know how to explain this trend, but maybe white students are more likely to choose other majors."),
+                    p("Next, it's relieving for students that like math to know that colleges with higher graduation rates
+                    tend to have more math majors."),
+                    p("Finally there is fluctuation for what an increase in part time workers does to the amount of math majors.
+                    Initial increases in part time labor show a decrease in math majors, but continued increase shows a rebound in math major percentages."),
+                    p("The last thing of note is that the attributes of the female percentage of students, 
+                    the proportion of multirace students, and the ability of students to get loans showed
+                    no significance when trying to predict the number of math majors."),
+                    h4("Your predicted college's percentage of math majors according to our model."),
                         
-                        #prints the output of the prediction
-                        verbatimTextOutput("prediction")
+                    #prints the output of the prediction
+                    verbatimTextOutput("prediction")
                     )
                 )
             )
@@ -271,6 +271,7 @@ server <- function(input, output) {
         if(federal() == 1) {
             feature_vector <- append(feature_vector, "PCTFLOAN")
         }
+        #exits function if no variables are chosen
         if (length(feature_vector) == 1) {
         }
         else{
