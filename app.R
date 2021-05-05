@@ -13,12 +13,13 @@
 
 #uses libaries
 library(shiny)
+library(shinythemes)
 library(shinyWidgets)
 library(ggplot2)
 library(tree)
 
 # Define UI for application
-ui <- fluidPage(
+ui <- fluidPage( theme = shinytheme("united"),
     
     #creates a navbar
     navbarPage("MATH Team Project",
@@ -30,9 +31,10 @@ ui <- fluidPage(
             titlePanel("Create your own models using our cleaned dataset"),
             
             # Sidebar with a slider input for number of bins 
-            h2("Choose variables to predict the amount of math majors at a college"),
+            h4("Choose variables to predict the amount of math majors at a college"),
             sidebarLayout(
                 sidebarPanel(
+                    h4("Choose variables to predict the amount of math majors at a college"),
                     #creates buttons that provide Yes or No choices 
                     #as to whether each feature should be included
                     
